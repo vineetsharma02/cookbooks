@@ -78,7 +78,7 @@ template '/etc/nginx/nginx.conf' do
 end
 
 #make changes to our default site file
-template '/etc/nginx/site-enabled/default' do
+template '/etc/nginx/sites-enabled/default' do
   source 'default.erb'
   owner 'root'
   group 'root'
