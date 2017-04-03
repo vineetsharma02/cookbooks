@@ -108,6 +108,15 @@ template '/home/ubuntu/simple_rails_app/Gemfile' do
   action :create
 end
 
+template '/home/ubuntu/simple_rails_app/config/database.yml' do
+  source 'database.yml.erb'
+  owner 'ubuntu'
+  group 'ubuntu'
+  mode 0644
+  action :create
+end
+
+
 
 bash 'install_ruby_app' do
    cwd '/home/ubuntu/simple_rails_app'
