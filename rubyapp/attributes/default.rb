@@ -6,5 +6,3 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-
-default['Repo-update']['enabled'] = true

@@ -16,21 +16,6 @@ apt_update 'all platforms' do
   action :update
 end
 
-if node['Repo-update']['enabled'] then
-  case node['platform_family']
-  when 'debian'
-    #Updating Ubuntu repositories
-    update_command = 'apt-get update'   
-  when 'redhat'
-    #Updating Redhat repositories
-    update_command = 'yum repolist'
-  end
-end
-
-execute 'repo-update' do
-command update_command
-end
-
 pkgs = value_for_platform(
                 ["redhat"] =>
         {"default" => %w{ unzip git}},
@@ -88,5 +73,5 @@ end
 
 #Nginx Service enable & restart or stop
 service 'nginx' do
-  action [ :enable, :stop ]
+  action [ :enable, :start ]
 end
