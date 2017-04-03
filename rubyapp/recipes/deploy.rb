@@ -116,25 +116,18 @@ template '/home/ubuntu/simple_rails_app/config/database.yml' do
   action :create
 end
 
-template '/etc/profile' do
-  source 'profile.erb'
-  owner 'root'
-  group 'root'
-  mode 0644
-  action :create
-end
-
 bash 'install_ruby_app' do
    code <<-EOH
      su - ubuntu -c 'cd /home/ubuntu/simple_rails_app; ./bin/setup'
+     sleep 30
      EOH
    action :run
 end
 
 bash 'starting_ruby_app' do
    code <<-EOH
-     su - ubuntu -c 'cd /home/ubuntu/simple_rails_app; ./bin/rails s &'
+     su - ubuntu -c 'cd /home/ubuntu/simple_rails_app; bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-production} &'
+     sleep 30
      EOH
    action :run
 end
-
