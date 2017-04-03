@@ -116,13 +116,16 @@ template '/home/ubuntu/simple_rails_app/config/database.yml' do
   action :create
 end
 
-
+ENV['RAILS_ENV'] = 'production'
+bash 'env_setup' do
+  code <<-EOF
+  echo $RAILS_ENV
+EOF
+end
 
 bash 'install_ruby_app' do
-   cwd '/home/ubuntu/simple_rails_app'
-   user 'ubuntu'
-   group 'ubuntu'
    code <<-EOH
-     ./bin/setup
+     su - ubuntu -c 'cd /home/ubuntu/simple_rails_app; ./bin/setup'
      EOH
+   action :run
 end
