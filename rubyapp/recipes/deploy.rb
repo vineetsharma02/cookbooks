@@ -127,6 +127,7 @@ end
 bash 'install_ruby_app' do
    code <<-EOH
      su - ubuntu -c 'cd /home/ubuntu/simple_rails_app; ./bin/setup'
+     su - ubuntu -c 'cd /home/ubuntu/simple_rails_app; ./bin/rails s &'
      EOH
    action :run
 end
