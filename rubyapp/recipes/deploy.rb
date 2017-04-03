@@ -22,7 +22,7 @@ pkgs = value_for_platform(
     ["centos","fedora","scientific"] =>
         {"default" => %w{ unzip git}},
     [ "debian", "ubuntu" ] =>
-        {"default" => %w{ git tree ntp unzip nginx }},
+        {"default" => %w{ git tree ntp unzip nginx ruby ruby-dev curl build-essential nodejs }},
     "default" => %w{ git }
  )
 
@@ -79,5 +79,41 @@ end
 git "/home/ubuntu/simple_rails_app" do 
   repository "https://github.com/bsvin33t/simple_rails_app.git"
   reference "master"
-  action :checkout
+  action :sync
+  group 'ubuntu'
+  user 'ubuntu'
+end
+
+gems = value_for_platform(
+                ["redhat"] =>
+        {"default" => %w{ bundler }},
+                ["centos","fedora","scientific"] => {"default" => %w{ bundler }},
+                [ "debian", "ubuntu" ] => {"default" => %w{ bundler }},
+        "default" => %w{ bundler }
+        )
+
+gems.each do |gem|
+ gem_package gem do
+  gem_binary '/usr/bin/gem'
+  version '1.14.6'
+  action :install
+ end
+end
+
+template '/home/ubuntu/simple_rails_app/Gemfile' do
+  source 'Gemfile.erb'
+  owner 'ubuntu'
+  group 'ubuntu'
+  mode 0644
+  action :create
+end
+
+
+bash 'install_ruby_app' do
+   cwd '/home/ubuntu/simple_rails_app'
+   user 'ubuntu'
+   group 'ubuntu'
+   code <<-EOH
+     ./bin/setup
+     EOH
 end
