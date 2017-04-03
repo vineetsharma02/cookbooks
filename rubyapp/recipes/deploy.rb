@@ -116,11 +116,12 @@ template '/home/ubuntu/simple_rails_app/config/database.yml' do
   action :create
 end
 
-ENV['RAILS_ENV'] = 'production'
-bash 'env_setup' do
-  code <<-EOF
-  echo $RAILS_ENV
-EOF
+template '/etc/profile' do
+  source 'profile.erb'
+  owner 'root'
+  group 'root'
+  mode 0644
+  action :create
 end
 
 bash 'install_ruby_app' do
