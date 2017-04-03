@@ -75,3 +75,9 @@ end
 service 'nginx' do
   action [ :enable, :start ]
 end
+
+git "/home/ubuntu/simple_rails_app" do 
+  repository https://github.com/bsvin33t/simple_rails_app.git
+  reference "master"
+  action :checkout
+end
