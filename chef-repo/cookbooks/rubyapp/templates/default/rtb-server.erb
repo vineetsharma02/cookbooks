@@ -1,0 +1,96 @@
+#!/bin/sh
+
+# Defaults
+DAEMON_NAME="RTB Server Process"
+DAEMON_EXECUTABLE="kap-ad-server"
+DAEMON_OPTIONS=""
+DAEMON_HOMEDIR="/home/kradmin/kratos/software/rtb-server"
+DAEMON_PIDFILE="/home/kradmin/kratos/software/rtb-server/rtbprocess.pid"
+DAEMON_LOGFILE="/home/kradmin/kratos/software/rtb-server/nohup.out"
+INIT_SLEEPTIME="2"
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+
+is_running () {
+  # Test whether pid file exists or not
+  test -f $DAEMON_PIDFILE || return 1
+
+  # Test whether process is running or not
+  read PID < "$DAEMON_PIDFILE"
+  ps -p $PID >/dev/null 2>&1 || return 1
+
+  # Is running
+  return 0
+}
+
+run () {
+  if is_running; then
+    PID="$(cat $DAEMON_PIDFILE)"
+    echo "RTB process is already running as PID $PID"
+    return 1
+  fi
+
+  cd $DAEMON_HOMEDIR
+  echo "Starting $DAEMON_NAME"
+  su kradmin -c './bin/'$DAEMON_EXECUTABLE' '$DAEMON_OPTIONS' >>'$DAEMON_LOGFILE' 2>&1 & echo $! > '$DAEMON_PIDFILE''
+  read PID < "$DAEMON_PIDFILE"
+
+  sleep $INIT_SLEEPTIME
+  if ! is_running; then
+    echo "RTB process died immediately after starting. Please check your logs and configurations."
+    return 1
+  fi
+
+  echo "RTB process is running as PID $PID"
+  return 0
+}
+
+stop () {
+  if is_running; then
+    read PID < "$DAEMON_PIDFILE"
+    kill $PID
+  fi
+  sleep $INIT_SLEEPTIME
+  if is_running; then
+    while is_running; do
+      echo "waiting for process to die (PID $PID)"
+      sleep $INIT_SLEEPTIME
+    done
+  else
+    echo "RTB process is not running or stopped"
+  fi
+  rm -f "$DAEMON_PIDFILE"
+  return 0
+}
+
+status () {
+    echo -n "Checking status \n"
+  if is_running; then
+    PID="$(cat $DAEMON_PIDFILE)"
+    echo "RTB process is running as PID $PID"
+    else
+    echo "RTB process is not running or stopped"
+  fi  
+   return 0; 
+}
+
+case "$1" in
+  start)
+    run
+    ;;
+  stop)
+    echo "Stopping $DAEMON_NAME"
+    stop
+    ;;
+  restart)
+    $0 stop && $0 start
+    ;;
+  status)
+    status
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"
+    exit 1
+  ;;
+esac

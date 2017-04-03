@@ -1,0 +1,152 @@
+{
+    "request-processor" : {
+        "kap.rp.http.port" : 13080,
+        "adserver.path" : "/as",
+        "rt.path"       : "/rt",
+        "win.server"    : "http://52.220.34.209/",
+        "bid.expiry"    :  30000,
+        "rp" : {
+           "dimensions" : [ 
+                "carrier","device","os","browser","screen",
+                "manufacturer","userAgent","ip","height","width",
+                "country","state","city","userId","site","siteId","referer", 
+                "network_type", "device_type","z_pid","advertiserId","campaignId",
+                "adId","isn","event_cost","region","action_type","config_id","affiliate_id","dev","v"
+            ],
+            "ip"           : { "param" : ["ip"],"header" : ["X-FORWARDED-FOR"]  },
+            "referer"      : { "param" : ["r"] ,"header" : ["Referer"]  }, 
+            "userAgent"    : { "param" : ["u"],"header" : ["User-Agent"],"caseInsensitive" : false },
+            "browser"      : { "param" : ["bw"] },
+            "siteId"       : { "param" : ["s"] },
+            "device"       : { "param" : ["d"], "header" : ["X-DEVICE"] },
+            "os"           : { "param" : ["os"], "header" : ["X-OS"] },
+            "carrier"      : { "param" : ["telco","ca"],"header" : ["X-CARRIER"] },
+            "network_type" : { "param" : ["nt"] },
+            "device_type"  : { "param" : ["dt"] },
+            "manufacturer" : { "param" : ["m"] },
+            "country"      : { "param" : ["c","con"], "header" : ["X-COUNTRY"] },
+            "state"        : { "param" : ["state"], "header" : ["X-STATE"]},                        
+            "city"         : { "param" : ["ci"], "header" : ["X-CITY"] },                                    
+            "userId"       : { "param" : ["ui","guid","ga_id","raw_android_id","android_id","p_guid","p_id"], "cookie" : ["JEB2"]},                                    
+            "z_pid"        : { "param" : ["p_guid","p_id"] },                                    
+            "advertiserId" : { "param" : ["a"] },                                    
+            "adId"         : { "param" : ["ad"]},                                    
+            "campaignId"   : { "param" : ["cd","camp_id","campaign_id"] },                                    
+            "isn"          : { "param" : ["kc","si"]},                                    
+            "event_cost"   : { "param" : ["ec"] },                                    
+            "region"       : { "param" : ["re"] },                                    
+            "action_type"  : { "param" : ["at"] },                                    
+            "config_id"    : { "param" : ["cf"] },                                    
+            "affiliate_id" : { "param" : ["aff_id","affiliateId"] },                                    
+            "height"       : { "param" : ["ht"] },                                    
+            "width"        : { "param" : ["wd"] },
+            "dev"          : { "param" : ["dev"] },
+            "v"            : { "param" : ["v"] },
+                        
+            "processors" : [
+                "com.thekratos.rp.ParamLookUp",
+                "com.thekratos.rtb.RTBLookUp",
+                "com.thekratos.rp.MaxMindLookUp",
+                "com.thekratos.rp.FiftyOneDegreesLookUp",
+                "com.thekratos.rp.SiteLookUp",
+                "com.thekratos.rp.CanonicalLookUp",
+                "com.thekratos.rp.SegmentLookUp"
+            ],
+            "publishers" : [
+                "com.thekratos.publish.JsonKafkaPublisher"
+            ],
+             "optimizer" : [ {"key":"random.opti", "class" : "com.thekratos.optimizer.DefaultRandomOptimizer"},
+                             {"key":"ecpm.opti", "class" : "com.thekratos.optimizer.DefaultRandomOptimizer"}
+                           ],
+            
+            "canonicalized" : [
+               "carrier","device",
+               "os","browser","manufacturer"
+            ]
+        },
+        "userid-cols" : ["userAgent","ip","os","manufacturer","carrier"]
+     },
+     "ad-ui" : {
+        "kap.ui.websocket.host" : "localhost",
+        "kap.ui.websocket.port" : 14080,
+        "kap.ui.socket.push.interval" : 1000
+    },
+    "event-logger" : {
+        "kap.event_logger.http.port" : 16080
+    },
+    "clk-verification-logger" : {
+        "kap.clk_verification_logger.http.port" : 17080
+    },
+    "ad-indexer" : {
+        "kap.index.interval" : 900000,
+        "kap.burn.set.interval" : 60000,
+        "kap.burn.get.interval" : 60000,
+    "kap.burn.rest.url" : "http://10.0.31.111/kap/dm/burns/",
+        "kap.adm.server.url" : "http://10.0.31.111/kap/adm/",
+        "kap.ad.indexes" : ["carrier","device","os","browser","manufacturer","country","category","rating","domain"],
+        "maxmind.isp" : "/GeoIPISP.dat",
+        "maxmind.netspeed" : "/GeoIPNetSpeedCell.dat",
+        "maxmind.country" : "/GeoIP2-Country.mmdb",
+    "maxmind.city" : "/GeoIP2-City.mmdb",
+        "fiftyone.data"   :  "./conf/51Degrees-PremiumV3.dat",
+        "bloomfilter.refresh" : 300000,
+        "bloomfilter.url" : "http://20.0.29.210:8383/kap/dataplatform/blocked/get/",
+        "kap.ecpm.interval" : 108000000,
+        "ecpm.rest.url" : "http://172.31.3.19/opti/accu/get/cpc"
+    },
+     "ad-server" : {
+        "request.timer.interval" : 15
+      },
+      "aggregate-config" : {
+        "aggregates"  : ["campaign-aggr"],
+        "campaign-aggr" : {
+            "columns" : ["advertiserId","campaignId"],
+            "time_levels" : ["daily","nolimit"]
+         }
+      },
+      "ab" : {
+            "image_base_url" : "http://52.220.34.209/banners",
+            "event_logger_url" : "http://52.220.34.209/es",
+            "client_imp_url" : "http://52.220.34.209/ci",
+            "pub_imp_url" : "http://172.31.4.74:9090/pi",
+            "templates" :{ "html":"kratos.html.template",
+                "xml" :"kratos.xml.template",
+                "dev.html" : "kratos.dev.html.template",
+                "dev.xml" : "kratos.dev.xml.template",
+                "nofill.html" : "kratos.nofill.html.template",
+                "nofill.xml"  : "kratos.nofill.xml.template"
+            }  
+      },
+     "global" : {
+    "rec.types.path" : "conf/data/record_types.xml",
+        "col.codes.path" : "conf/data/column.codes",
+        "redis.config":{
+            "redis.server":"20.0.16.73",
+            "redis.ttls" : {"BID_RESPONSE":86400}
+        },
+        "rest-config":{
+            "rest.base.url": "http://10.0.31.111/kap/adm/"
+        },
+        "aggregate.memcache.config":{
+            "memcache.server":"20.0.28.95:11211,20.0.26.42:11211",
+            "cache_expiry":86400            
+        },
+        "enable.kafka" : true,
+        "kafka.host" : "20.0.20.166:9092,20.0.27.27:9092,20.0.16.118:9092",
+        "exclusion-aggregate-config" : {
+            "aggregates"  : ["campaign-aggr"],
+            "campaign-aggr" : {
+                "time_levels" : ["daily","nolimit"]
+            }       
+          },
+        "aerospike-config":{
+            "aerospike.enable":true,
+            "aerospike.host":"20.0.29.210,20.0.7.102",
+            "aerospike.port":3000,
+            "bloomfilter.enable" : true,
+            "bloomfilter.props" : { "exp.insertions" : 1000000 , "fp.prob" : 0.00001 }
+        },
+        "adMarkUps" :{ "html":"kratos.html.template", "xml" :"kratos.xml.template","dev.html" : "kratos.dev.html.template","dev.xml" : "kratos.dev.xml.template"
+        }
+      }
+}

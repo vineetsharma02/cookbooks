@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <property name="LOG_HOME" value="/data/logs" />
+    <property name="DATA_HOME" value="/data/json" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{yyyy-MM-dd-HH HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <appender name="FILE-AUDIT"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/ad-server.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>
+                %d{yyyy-MM-dd-HH HH:mm:ss} - %msg%n
+            </Pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/ad-server.%d{yyyy-MM-dd}.%i.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+                <maxHistory>3</maxHistory>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+    </appender>
+
+    <appender name="SERVER_IMPRESSION_APP"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${DATA_HOME}/si/server-imp.log</file>
+        <rollingPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${DATA_HOME}/si/server-imp.log-%d{yyyy-MM-dd-HH}.%i.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="NO_FILL_APP"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${DATA_HOME}/nf/nofill.log</file>
+        <rollingPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+        <fileNamePattern>${DATA_HOME}/nf/nofill.log-%d{yyyy-MM-dd-HH}.%i.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="BID_REQUEST_APP"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${DATA_HOME}/bid-req/bid-req.log</file>
+        <rollingPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>${DATA_HOME}/bid-req/bid-req.log-%d{yyyy-MM-dd-HH}.%i.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="BID_RESPONSE_APP"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${DATA_HOME}/bid-res/bid-res.log</file>
+        <rollingPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${DATA_HOME}/bid-res/bid-res.log-%d{yyyy-MM-dd-HH}.%i.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ERROR_APP"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${DATA_HOME}/error/error.log</file>
+        <rollingPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${DATA_HOME}/error/error.log-%d{yyyy-MM-dd-HH}.%i.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+
+
+    <logger name="SERVER_IMPRESSION" additivity="false">
+        <level value="info" />
+        <appender-ref ref="SERVER_IMPRESSION_APP" />
+    </logger>
+
+
+    <logger name="ERROR" additivity="false">
+        <level value="info" />
+        <appender-ref ref="ERROR_APP" />
+    </logger>
+
+    <logger name="BID_REQUEST" additivity="false">
+        <level value="info" />
+        <appender-ref ref="BID_REQUEST_APP" />
+    </logger>
+
+    <logger name="BID_RESPONSE" additivity="false">
+        <level value="info" />
+        <appender-ref ref="BID_RESPONSE_APP" />
+    </logger>
+
+    <logger name="NO_FILL" additivity="false">
+        <level value="info" />
+        <appender-ref ref="NO_FILL_APP" />
+    </logger>
+
+    <!-- Send logs to both console and file audit -->
+    <logger name="com.thekratos" level="info" additivity="false">
+        <appender-ref ref="FILE-AUDIT" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>
