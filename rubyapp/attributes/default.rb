@@ -7,6 +7,6 @@
 # All rights reserved - Do Not Redistribute
 #
 
-default['db']['address'] = 'localhost'
+default['db']['address'] = 'test-db-server.cxf2cgtw1gqt.ap-southeast-1.rds.amazonaws.com'
 default['db']['user'] = 'root'
 default['db']['password'] = 'root1234'
