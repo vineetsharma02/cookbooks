@@ -100,14 +100,6 @@ gems.each do |gem|
  end
 end
 
-template '/home/ubuntu/simple_rails_app/Gemfile.lock' do
-  source 'Gemfile.lock.erb'
-  owner 'ubuntu'
-  group 'ubuntu'
-  mode 0644
-  action :create
-end
-
 template '/home/ubuntu/simple_rails_app/config/secrets.yml' do
   source 'secrets.yml.erb'
   owner 'ubuntu'
@@ -124,12 +116,14 @@ template '/home/ubuntu/simple_rails_app/config/database.yml' do
   action :create
 end
 
-template '/etc/profile' do
-  source 'profile.erb'
-  owner 'root'
-  group 'root'
-  mode 0644
-  action :create
+bash 'env_var' do
+  code <<-EOF
+  export RAILS_ENV=production
+  export RACK_ENV=production
+  EOF
+  user 'ubuntu'
+  group 'ubuntu'
+  action :run
 end
 
 bash 'install_ruby_app' do
