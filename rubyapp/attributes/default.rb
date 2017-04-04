@@ -6,3 +6,7 @@
 #
 # All rights reserved - Do Not Redistribute
 #
+
+default['db']['address'] = 'localhost'
+default['db']['user'] = 'root'
+default['db']['password'] = 'root1234'

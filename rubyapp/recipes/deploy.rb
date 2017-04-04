@@ -22,7 +22,7 @@ pkgs = value_for_platform(
     ["centos","fedora","scientific"] =>
         {"default" => %w{ unzip git}},
     [ "debian", "ubuntu" ] =>
-        {"default" => %w{ git tree ntp unzip nginx ruby ruby-dev curl build-essential nodejs }},
+        {"default" => %w{ git tree ntp unzip nginx ruby ruby-dev curl build-essential libpq-dev nodejs }},
     "default" => %w{ git }
  )
 
@@ -100,18 +100,26 @@ gems.each do |gem|
  end
 end
 
-template '/home/ubuntu/simple_rails_app/Gemfile' do
-  source 'Gemfile.erb'
+#template '/home/ubuntu/simple_rails_app/Gemfile' do
+#  source 'Gemfile.erb'
+#  owner 'ubuntu'
+#  group 'ubuntu'
+#  mode 0644
+#  action :create
+#end
+
+template '/home/ubuntu/simple_rails_app/config/database.yml' do
+  source 'database.yml.erb'
   owner 'ubuntu'
   group 'ubuntu'
   mode 0644
   action :create
 end
 
-template '/home/ubuntu/simple_rails_app/config/database.yml' do
-  source 'database.yml.erb'
-  owner 'ubuntu'
-  group 'ubuntu'
+template '/etc/profile' do
+  source 'profile.erb'
+  owner 'root'
+  group 'root'
   mode 0644
   action :create
 end
