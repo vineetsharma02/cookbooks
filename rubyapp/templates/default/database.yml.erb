@@ -1,6 +1,6 @@
 default: &default
   adapter: postgresql
-  host: node['db']['address']
+  host: <%= node['db']['address'] %>
 
 development:
   <<: *default
@@ -17,5 +17,5 @@ test: &test
 production:
   <<: *default
   database: simple_rails_app_production
-  username: node['db']['user']
-  password: node['db']['password']
+  username: <%= node['db']['user'] %>
+  password: <%= node['db']['password'] %>
