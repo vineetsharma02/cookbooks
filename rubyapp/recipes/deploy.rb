@@ -100,13 +100,21 @@ gems.each do |gem|
  end
 end
 
-#template '/home/ubuntu/simple_rails_app/Gemfile' do
-#  source 'Gemfile.erb'
-#  owner 'ubuntu'
-#  group 'ubuntu'
-#  mode 0644
-#  action :create
-#end
+template '/home/ubuntu/simple_rails_app/Gemfile.lock' do
+  source 'Gemfile.lock.erb'
+  owner 'ubuntu'
+  group 'ubuntu'
+  mode 0644
+  action :create
+end
+
+template '/home/ubuntu/simple_rails_app/config/secrets.yml' do
+  source 'secrets.yml.erb'
+  owner 'ubuntu'
+  group 'ubuntu'
+  mode 0644
+  action :create
+end
 
 template '/home/ubuntu/simple_rails_app/config/database.yml' do
   source 'database.yml.erb'
