@@ -116,18 +116,23 @@ template '/home/ubuntu/simple_rails_app/config/database.yml' do
   action :create
 end
 
-template '/home/ubuntu/.bash_profile' do
-  source 'bash_profile.erb'
-  user 'ubuntu'
-  group 'ubuntu'
-  mode 0600
+template '/etc/profile.d/myscript.sh' do
+  source 'myscript.sh.erb'
+  owner 'root'
+  group 'root'
+  mode 0644
   action :create
+end
+
+execute "run_updated_bash" do
+  command "bash /etc/profile.d/myscript.sh"
+  action :run
 end
 
 bash 'install_ruby_app' do
    code <<-EOH
      su - ubuntu -c 'cd /home/ubuntu/simple_rails_app; ./bin/setup'
-     sleep 30
+     sleep 10
      EOH
    action :run
 end
