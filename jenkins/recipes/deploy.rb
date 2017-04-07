@@ -58,12 +58,6 @@ service 'jenkins' do
   supports :restart => true
 end
 
-group 'tomcat' do
-  action :create
-  members 'tomcat'
-  append true
-end
-
 user tomcat do
     shell       '/bin/false'
     comment     'tomcat user'
