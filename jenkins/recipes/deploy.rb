@@ -58,7 +58,7 @@ service 'jenkins' do
   supports :restart => true
 end
 
-user tomcat do
+user 'tomcat' do
     shell       '/bin/false'
     comment     'tomcat user'
     home        '/opt/tomcat'
