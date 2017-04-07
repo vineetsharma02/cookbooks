@@ -57,3 +57,30 @@ service 'jenkins' do
   action [ :enable, :start ]
   supports :restart => true
 end
+
+group 'tomcat' do
+  action :create
+  members 'tomcat'
+  append true
+end
+
+user tomcat do
+    shell       '/bin/false'
+    comment     'tomcat user'
+    home        '/opt/tomcat'
+    action      :create
+end
+
+bash 'starting_ruby_app' do
+   code <<-EOH
+cd /opt/
+wget http://mirror.wanxp.id/apache/tomcat/tomcat-8/v8.5.6/bin/apache-tomcat-8.5.6.tar.gz
+tar -xzvf apache-tomcat-8.5.6.tar.gz
+mv apache-tomcat-8.5.6 tomcat
+chown -hR tomcat:tomcat tomcat
+chmod +x /opt/tomcat/bin/*
+/opt/tomcat/bin/startup.sh
+sleep 10
+	EOH
+   action :run
+end
