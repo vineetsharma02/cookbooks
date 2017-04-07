@@ -68,7 +68,7 @@ end
 bash 'starting_ruby_app' do
    code <<-EOH
 cd /opt/
-http://redrockdigimark.com/apachemirror/tomcat/tomcat-8/v8.5.13/bin/apache-tomcat-8.5.13.tar.gz
+wget http://redrockdigimark.com/apachemirror/tomcat/tomcat-8/v8.5.13/bin/apache-tomcat-8.5.13.tar.gz
 tar -xzvf apache-tomcat-8.5.13.tar.gz
 mv apache-tomcat-8.5.13 tomcat
 chown -hR tomcat:tomcat tomcat
